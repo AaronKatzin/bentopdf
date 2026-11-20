@@ -12,6 +12,8 @@ dist
 dist-publish
 # AaronPDF deploy output (built by aaronpdf/build.sh)
 /aaronpdf/site/
+__pycache__/
+*.pyc
 dist-ssr
 *.local
 .npm-cache
