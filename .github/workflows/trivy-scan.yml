@@ -16,6 +16,7 @@ permissions:
 jobs:
   scan-image:
     runs-on: ubuntu-latest
+    if: github.repository == 'alam00000/bentopdf'
     strategy:
       matrix:
         image:
@@ -58,6 +59,7 @@ jobs:
 
   scan-dependencies:
     runs-on: ubuntu-latest
+    if: github.repository == 'alam00000/bentopdf'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -81,6 +83,7 @@ jobs:
 
   scan-config:
     runs-on: ubuntu-latest
+    if: github.repository == 'alam00000/bentopdf'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
