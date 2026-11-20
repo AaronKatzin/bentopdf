@@ -132,11 +132,36 @@ function rewriteInternalLinks(document, knownSlugs) {
   }
 }
 
+function prefixBasePath(value) {
+  if (typeof value !== 'string' || !value.startsWith('/')) return value;
+  if (value === BASE_PATH || value.startsWith(`${BASE_PATH}/`)) return value;
+  return `${BASE_PATH}${value}`;
+}
+
+function rewriteWebManifest() {
+  if (!BASE_PATH) return;
+  const manifestPath = path.join(DIST_DIR, 'site.webmanifest');
+  if (!fs.existsSync(manifestPath)) return;
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  manifest.start_url = prefixBasePath(manifest.start_url || '/');
+  manifest.scope = prefixBasePath(manifest.scope || '/');
+  if (Array.isArray(manifest.icons)) {
+    for (const icon of manifest.icons) {
+      if (icon && typeof icon.src === 'string') {
+        icon.src = prefixBasePath(icon.src);
+      }
+    }
+  }
+  fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 4)}\n`);
+  console.log(`SEO enhance: rewrote site.webmanifest for base ${BASE_PATH}`);
+}
+
 function enhance() {
   if (!fs.existsSync(DIST_DIR)) {
     console.error('enhance-seo-pages: dist not found, run vite build first');
     process.exit(1);
   }
+  rewriteWebManifest();
   const files = listTopLevelHtml();
   const knownSlugs = new Set(files.map((f) => path.basename(f, '.html')));
 
