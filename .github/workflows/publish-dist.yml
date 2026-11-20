@@ -1,0 +1,92 @@
+# Build the static site and publish it to the orphan `dist` branch.
+# Altare (and any other host) should serve that branch as-is:
+#   install: empty
+#   build:   empty
+#   start:   npx -y serve@14 -s .
+#   root:    the branch root (index.html, serve.json, pdf/)
+#
+# Vendor tarballs under vendor/ are ordinary git blobs, not Git LFS, so a
+# normal checkout is enough for `npm ci`.
+
+name: Publish static site
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-dist
+  cancel-in-progress: true
+
+env:
+  HUSKY: '0'
+  # Subdirectory the reverse proxy and the Altare host both preserve.
+  # Override by editing this file. Local `npm run dev` stays at `/` when
+  # BASE_URL is unset.
+  BASE_URL: /pdf/
+  COMPRESSION_MODE: o
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build
+        run: npm run build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+          # Empty repository variables fall through to the official-site
+          # canonicals. Set SITE_URL (and ALLOW_INDEXING=true to be indexed)
+          # to point sitemap and canonical URLs at this deployment; BASE_URL
+          # is included automatically once SITE_URL is not bentopdf.com.
+          SITE_URL: ${{ vars.SITE_URL }}
+          ALLOW_INDEXING: ${{ vars.ALLOW_INDEXING }}
+
+      - name: Assemble dist branch
+        run: node scripts/assemble-dist-branch.mjs --out dist-publish
+
+      - name: Report publish size
+        run: |
+          set -euo pipefail
+          du -sh dist-publish dist-publish/pdf | tee /dev/stderr
+          bytes=$(du -sb dist-publish | cut -f1)
+          # Altare's disk is 0.5 GB. Leave headroom for the git checkout
+          # metadata and the npx cache `serve` creates on first start.
+          limit=$((450 * 1024 * 1024))
+          echo "publish_bytes=${bytes}"
+          if [ "$bytes" -gt "$limit" ]; then
+            echo "Publish tree is ${bytes} bytes, over the ${limit} byte budget."
+            du -h --max-depth=2 dist-publish | sort -h | tail -n 40
+            exit 1
+          fi
+
+      - name: Publish orphan dist branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          work=$(mktemp -d)
+          cp -a dist-publish/. "$work/"
+          cd "$work"
+          git init -b dist
+          git add -A
+          git commit -m "Publish static site (BASE_URL=${BASE_URL})"
+          git push --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:dist

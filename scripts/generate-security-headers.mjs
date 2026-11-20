@@ -163,11 +163,14 @@ export function buildSecurityHeaders(env = process.env) {
     ]),
   ].join('\n');
 
+  const headerPairs = [['Content-Security-Policy', csp], ...COMMON_HEADERS];
+
   return {
     csp,
     docsCsp,
     scriptSources,
     connectOrigins,
+    headerPairs,
     nginx: nginxHeaders(csp),
     nginxDocs: nginxHeaders(docsCsp),
     staticHeaders,
