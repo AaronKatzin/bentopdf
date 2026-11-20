@@ -51,12 +51,6 @@ jobs:
         run: npm run build
         env:
           NODE_OPTIONS: --max-old-space-size=4096
-          # Empty repository variables fall through to the official-site
-          # canonicals. Set SITE_URL (and ALLOW_INDEXING=true to be indexed)
-          # to point sitemap and canonical URLs at this deployment; BASE_URL
-          # is included automatically once SITE_URL is not bentopdf.com.
-          SITE_URL: ${{ vars.SITE_URL }}
-          ALLOW_INDEXING: ${{ vars.ALLOW_INDEXING }}
 
       - name: Assemble dist branch
         run: node scripts/assemble-dist-branch.mjs --out dist-publish
@@ -81,12 +75,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           work=$(mktemp -d)
           cp -a dist-publish/. "$work/"
           cd "$work"
           git init -b dist
+          # checkout's user.name lives in the source worktree, not this new repo.
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Publish static site (BASE_URL=${BASE_URL})"
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Publish static site (BASE_URL=${BASE_URL})"
           git push --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:dist
