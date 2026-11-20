@@ -1,0 +1,85 @@
+# Build AaronPDF from source and publish it to the existing Cloudflare Worker
+# `bentopdf` (https://aaronkatzin.com/pdf/).
+#
+# Pull requests build, rebrand, and smoke-check only. A push to the default
+# branch (a merged PR) and a manual run deploy.
+
+name: Deploy AaronPDF
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-aaronpdf-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  site:
+    name: Build AaronPDF
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      HUSKY: "0"
+      BASE_URL: /pdf/
+      COMPRESSION_MODE: o
+      NODE_OPTIONS: --max-old-space-size=4096
+      # On a pull request, github.sha is a synthetic merge commit. Link the
+      # footer at the branch commit, which is the tree a reviewer can open.
+      AARONPDF_COMMIT: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Install Pillow
+        run: |
+          python3 -m venv "$RUNNER_TEMP/py"
+          "$RUNNER_TEMP/py/bin/pip" install --disable-pip-version-check pillow
+          echo "$RUNNER_TEMP/py/bin" >> "$GITHUB_PATH"
+
+      - name: Build, prune, rebrand, and smoke-check
+        run: bash aaronpdf/build.sh
+
+      - name: Validate Wrangler config
+        run: npx --yes wrangler@4.165.0 deploy --dry-run --no-autoconfig --config aaronpdf/wrangler.jsonc
+
+      - name: Deploy to Cloudflare Workers
+        if: github.event_name != 'pull_request'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx --yes wrangler@4.165.0 deploy --no-autoconfig --config aaronpdf/wrangler.jsonc
+
+      - name: Check the live site
+        if: github.event_name != 'pull_request'
+        run: |
+          set -euo pipefail
+          for url in https://aaronkatzin.com/pdf/ https://aaronkatzin.com/pdf/merge-pdf; do
+            code=""
+            for _ in 1 2 3 4 5 6; do
+              code="$(curl -sS -o /dev/null -w '%{http_code}' "$url" || true)"
+              echo "$url -> $code"
+              if [[ "$code" == "200" ]]; then
+                break
+              fi
+              sleep 5
+            done
+            if [[ "$code" != "200" ]]; then
+              echo "::error::$url returned ${code:-curl-failed}"
+              exit 1
+            fi
+          done

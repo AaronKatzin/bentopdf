@@ -1,0 +1,21 @@
+{
+  // Assets-only Worker: no "main" script. Static files in ./site are the site.
+  // Deployed by .github/workflows/deploy-aaronpdf.yml (wrangler deploy).
+  "name": "bentopdf",
+  // Not a secret. Override with the CLOUDFLARE_ACCOUNT_ID env var if it ever changes.
+  "account_id": "d94dfc30c600b4f8879e0b33387a7568",
+  // Same compatibility date as the Worker already serving aaronkatzin.com/pdf.
+  "compatibility_date": "2026-11-01",
+  // Routes make Wrangler default this to false and disable the workers.dev
+  // hostname on the next deploy. The live Worker has it enabled.
+  "workers_dev": true,
+  "assets": {
+    "directory": "./site",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "routes": [
+    { "pattern": "aaronkatzin.com/pdf", "zone_name": "aaronkatzin.com" },
+    { "pattern": "aaronkatzin.com/pdf/*", "zone_name": "aaronkatzin.com" }
+  ]
+}
