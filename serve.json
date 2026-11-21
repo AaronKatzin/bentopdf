@@ -1,0 +1,262 @@
+{
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "directoryListing": false,
+  "redirects": [
+    {
+      "source": "/pdf",
+      "destination": "/pdf/index.html"
+    },
+    {
+      "source": "/pdf/",
+      "destination": "/pdf/index.html"
+    },
+    {
+      "source": "/pdf/ar",
+      "destination": "/pdf/ar/index.html"
+    },
+    {
+      "source": "/pdf/ar/",
+      "destination": "/pdf/ar/index.html"
+    },
+    {
+      "source": "/pdf/be",
+      "destination": "/pdf/be/index.html"
+    },
+    {
+      "source": "/pdf/be/",
+      "destination": "/pdf/be/index.html"
+    },
+    {
+      "source": "/pdf/blog",
+      "destination": "/pdf/blog/index.html"
+    },
+    {
+      "source": "/pdf/blog/",
+      "destination": "/pdf/blog/index.html"
+    },
+    {
+      "source": "/pdf/ca",
+      "destination": "/pdf/ca/index.html"
+    },
+    {
+      "source": "/pdf/ca/",
+      "destination": "/pdf/ca/index.html"
+    },
+    {
+      "source": "/pdf/da",
+      "destination": "/pdf/da/index.html"
+    },
+    {
+      "source": "/pdf/da/",
+      "destination": "/pdf/da/index.html"
+    },
+    {
+      "source": "/pdf/de",
+      "destination": "/pdf/de/index.html"
+    },
+    {
+      "source": "/pdf/de/",
+      "destination": "/pdf/de/index.html"
+    },
+    {
+      "source": "/pdf/es",
+      "destination": "/pdf/es/index.html"
+    },
+    {
+      "source": "/pdf/es/",
+      "destination": "/pdf/es/index.html"
+    },
+    {
+      "source": "/pdf/fa",
+      "destination": "/pdf/fa/index.html"
+    },
+    {
+      "source": "/pdf/fa/",
+      "destination": "/pdf/fa/index.html"
+    },
+    {
+      "source": "/pdf/fr",
+      "destination": "/pdf/fr/index.html"
+    },
+    {
+      "source": "/pdf/fr/",
+      "destination": "/pdf/fr/index.html"
+    },
+    {
+      "source": "/pdf/id",
+      "destination": "/pdf/id/index.html"
+    },
+    {
+      "source": "/pdf/id/",
+      "destination": "/pdf/id/index.html"
+    },
+    {
+      "source": "/pdf/it",
+      "destination": "/pdf/it/index.html"
+    },
+    {
+      "source": "/pdf/it/",
+      "destination": "/pdf/it/index.html"
+    },
+    {
+      "source": "/pdf/ja",
+      "destination": "/pdf/ja/index.html"
+    },
+    {
+      "source": "/pdf/ja/",
+      "destination": "/pdf/ja/index.html"
+    },
+    {
+      "source": "/pdf/ko",
+      "destination": "/pdf/ko/index.html"
+    },
+    {
+      "source": "/pdf/ko/",
+      "destination": "/pdf/ko/index.html"
+    },
+    {
+      "source": "/pdf/nl",
+      "destination": "/pdf/nl/index.html"
+    },
+    {
+      "source": "/pdf/nl/",
+      "destination": "/pdf/nl/index.html"
+    },
+    {
+      "source": "/pdf/pl",
+      "destination": "/pdf/pl/index.html"
+    },
+    {
+      "source": "/pdf/pl/",
+      "destination": "/pdf/pl/index.html"
+    },
+    {
+      "source": "/pdf/pt",
+      "destination": "/pdf/pt/index.html"
+    },
+    {
+      "source": "/pdf/pt/",
+      "destination": "/pdf/pt/index.html"
+    },
+    {
+      "source": "/pdf/ru",
+      "destination": "/pdf/ru/index.html"
+    },
+    {
+      "source": "/pdf/ru/",
+      "destination": "/pdf/ru/index.html"
+    },
+    {
+      "source": "/pdf/sk",
+      "destination": "/pdf/sk/index.html"
+    },
+    {
+      "source": "/pdf/sk/",
+      "destination": "/pdf/sk/index.html"
+    },
+    {
+      "source": "/pdf/sv",
+      "destination": "/pdf/sv/index.html"
+    },
+    {
+      "source": "/pdf/sv/",
+      "destination": "/pdf/sv/index.html"
+    },
+    {
+      "source": "/pdf/tr",
+      "destination": "/pdf/tr/index.html"
+    },
+    {
+      "source": "/pdf/tr/",
+      "destination": "/pdf/tr/index.html"
+    },
+    {
+      "source": "/pdf/uk",
+      "destination": "/pdf/uk/index.html"
+    },
+    {
+      "source": "/pdf/uk/",
+      "destination": "/pdf/uk/index.html"
+    },
+    {
+      "source": "/pdf/vi",
+      "destination": "/pdf/vi/index.html"
+    },
+    {
+      "source": "/pdf/vi/",
+      "destination": "/pdf/vi/index.html"
+    },
+    {
+      "source": "/pdf/zh",
+      "destination": "/pdf/zh/index.html"
+    },
+    {
+      "source": "/pdf/zh/",
+      "destination": "/pdf/zh/index.html"
+    },
+    {
+      "source": "/pdf/zh-TW",
+      "destination": "/pdf/zh-TW/index.html"
+    },
+    {
+      "source": "/pdf/zh-TW/",
+      "destination": "/pdf/zh-TW/index.html"
+    },
+    {
+      "source": "/pdf/:page([A-Za-z0-9-]+)",
+      "destination": "/pdf/:page.html"
+    },
+    {
+      "source": "/pdf/:dir([A-Za-z0-9-]+)/:page([A-Za-z0-9-]+)",
+      "destination": "/pdf/:dir/:page.html"
+    },
+    {
+      "source": "/pdf/:dir([A-Za-z0-9-]+)/:mid([A-Za-z0-9-]+)/:page([A-Za-z0-9-]+)",
+      "destination": "/pdf/:dir/:mid/:page.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "**/*",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval' blob: https://cdn.jsdelivr.net/npm/@bentopdf/pymupdf-wasm@0.11.16/ https://cdn.jsdelivr.net/npm/@bentopdf/gs-wasm@0.1.1/assets/ https://cdn.jsdelivr.net/npm/coherentpdf@2.5.5/dist/ https://cdn.jsdelivr.net/npm/tesseract.js@v7.0.0/dist/ https://cdn.jsdelivr.net/npm/tesseract.js-core@v7.0.0/; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://rawcdn.githack.com; connect-src 'self' blob: https://api.github.com https://fonts.gstatic.com https://cdn.jsdelivr.net https://bentopdf-cors-proxy.bentopdf.workers.dev https://rawcdn.githack.com; object-src 'none'; base-uri 'self'; frame-src 'self' blob:; frame-ancestors 'self'; form-action 'self'"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "geolocation=(), camera=(), microphone=(), payment=(), usb=(), interest-cohort=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "credentialless"
+        },
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "cross-origin"
+        }
+      ]
+    }
+  ]
+}
